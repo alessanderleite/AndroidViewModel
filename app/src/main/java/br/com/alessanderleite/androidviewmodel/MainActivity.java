@@ -1,5 +1,8 @@
 package br.com.alessanderleite.androidviewmodel;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,5 +25,19 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        setHeroesViewModel();
+    }
+
+    private void setHeroesViewModel() {
+        HeroesViewModel model = ViewModelProviders.of(this).get(HeroesViewModel.class);
+
+        model.getHeroes().observe(this, new Observer<List<Hero>>() {
+            @Override
+            public void onChanged(@Nullable List<Hero> heroList) {
+                adapter = new HeroesAdapter(MainActivity.this, heroList);
+                recyclerView.setAdapter(adapter);
+            }
+        });
     }
 }
